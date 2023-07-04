@@ -1,13 +1,15 @@
 export * from './constants';
+
 export * from './getContract';
 export * from './getContracts';
-export { getPrizePoolInfo } from './getPrizePoolInfo';
-export { getWinnersClaims } from './getWinnersClaims';
-export { getSubgraphVaults, populateSubgraphVaultAccounts } from './getSubgraphVaults';
-export { getSubgraphClaimedPrizes } from './getSubgraphClaimedPrizes';
-export { getRpcClaimedPrizes } from './getRpcClaimedPrizes';
-export {
-  getMulticallResults,
-  getComplexMulticallResults,
-  getEthersMulticallProviderResults,
-} from './multicall';
+export * from './getPrizePoolInfo';
+export * from './getWinnersClaims';
+export * from './getSubgraphVaults';
+
+export * from './getSubgraphClaimedPrizes';
+export * from './flagClaimedSubgraph';
+
+export * from './getRpcClaimedPrizes';
+export * from './flagClaimedRpc';
+
+export * from './multicall';

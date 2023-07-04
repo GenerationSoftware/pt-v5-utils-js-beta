@@ -1,10 +1,10 @@
 {
-    "name": "@pooltogether/v5-utils-js",
-    "description": "Utility library for PoolTogether V5 off-chain computations.",
+    "name": "@generationsoftware/pt-v5-utils-js",
+    "description": "Utility library for PoolTogether v5 computations.",
     "author": "PoolTogether Inc",
     "license": "GPL-3.0-only",
-    "version": "0.0.1-beta.26",
-    "homepage": "https://github.com/pooltogether/v5-utils-js",
+    "version": "0.0.1-beta.27",
+    "homepage": "https://github.com/pooltogether/pt-v5-utils-js",
     "bugs": {
         "url": "https://github.com/pooltogether/issues",
         "email": "bugs@pooltogether.com"

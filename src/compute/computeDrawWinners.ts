@@ -1,9 +1,9 @@
 import { Provider } from '@ethersproject/providers';
 
 import { getSubgraphVaults, populateSubgraphVaultAccounts } from '../utils/getSubgraphVaults';
-import { getRpcClaimedPrizes } from '../utils/getRpcClaimedPrizes';
 import { getWinnersClaims } from '../utils/getWinnersClaims';
 import { getPrizePoolInfo } from '../utils/getPrizePoolInfo';
+import { flagClaimedRpc } from '../utils/flagClaimedRpc';
 import { ContractsBlob, Claim, PrizePoolInfo } from '../types';
 
 /**
@@ -40,42 +40,3 @@ export async function computeDrawWinners(
 
   return claims;
 }
-
-// const flagClaimedSubgraph = async (
-//   chainId: number,
-//   claims: Claim[],
-//   prizePoolInfo: PrizePoolInfo,
-// ): Promise<Claim[]> => {
-//   const drawId = prizePoolInfo.drawId;
-//   const claimedPrizes: ClaimedPrize[] = await getSubgraphClaimedPrizes(chainId, drawId);
-
-//   const formattedClaimedPrizes = claimedPrizes.map((claimedPrize) => {
-//     // From Subgraph, `id` is:
-//     // vault ID + winner ID + draw ID + tier
-//     const [vault, winner, draw, tier] = claimedPrize.id.split('-');
-//     return `${vault}-${winner}-${tier}`;
-//   });
-
-//   for (let claim of claims) {
-//     claim.claimed = formattedClaimedPrizes.includes(claimCompositeKey(claim));
-//   }
-
-//   return claims;
-// };
-
-const flagClaimedRpc = async (
-  readProvider: Provider,
-  contracts: ContractsBlob,
-  claims: Claim[],
-): Promise<Claim[]> => {
-  const claimedPrizes: string[] = await getRpcClaimedPrizes(readProvider, contracts, claims);
-
-  for (let claim of claims) {
-    claim.claimed = claimedPrizes.includes(claimSimpleCompositeKey(claim));
-  }
-
-  return claims;
-};
-
-const claimSimpleCompositeKey = (claim: Claim) =>
-  `${claim.vault}-${claim.winner}-${claim.tier}-${claim.prizeIndex}`;
