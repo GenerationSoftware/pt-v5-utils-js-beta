@@ -48,19 +48,19 @@ export const getWinnersClaims = async (
 
   // OPTIMIZE: Make sure user has balance before adding them to the read multicall
   for (let vault of vaults) {
-    // console.log('');
-    // console.log('# Processing vault:', vault.id);
+    console.log('');
+    console.log('# Processing vault:', vault.id);
     let toQuery: Record<string, any> = {};
 
-    // console.log(`${vault.accounts.length} accounts.`);
-    // console.log(`${prizePoolInfo.tiersRangeArray.length} tiers.`);
+    console.log(`${vault.accounts.length} accounts.`);
+    console.log(`${prizePoolInfo.tiersRangeArray.length} tiers.`);
 
     for (let account of vault.accounts) {
       const address = account.id.split('-')[1];
 
       for (let tierNum of prizePoolInfo.tiersRangeArray) {
         const tier: TierPrizeData = prizePoolInfo.tierPrizeData[tierNum];
-        // console.log(`${tier.count} prizes for tier ${tierNum}.`);
+        console.log(`${tier.count} prizes for tier ${tierNum}.`);
 
         for (let prizeIndex of tier.rangeArray) {
           const key = `${vault.id}-${address}-${tierNum}-${prizeIndex}`;
@@ -69,16 +69,16 @@ export const getWinnersClaims = async (
       }
     }
 
-    // console.log('toQuery count:', Object.keys(toQuery).length);
+    console.log('toQuery count:', Object.keys(toQuery).length);
 
     const results = await getEthersMulticallProviderResults(multicallProvider, toQuery);
     queries = { ...queries, ...results };
   }
 
-  // console.log('');
-  // console.log('');
-  // console.log('Total # of Queries:');
-  // console.log(Object.values(queries).length);
+  console.log('');
+  console.log('');
+  console.log('Total # of Queries:');
+  console.log(Object.values(queries).length);
 
   // Builds the array of claims
   let claims = getClaims(queries);
@@ -102,6 +102,8 @@ export const getWinnersClaims = async (
 const getClaims = (queries: Record<string, any>): Claim[] => {
   // Filter to only 'true' results of isWinner() calls
   const filteredWinners = _.pickBy(queries, (object) => !!object);
+  console.log('filteredWinners');
+  console.log(filteredWinners);
 
   // Push to claims array
   const claims: Claim[] = Object.keys(filteredWinners).map((vaultUserTierResult) => {
