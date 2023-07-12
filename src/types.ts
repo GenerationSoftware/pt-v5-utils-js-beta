@@ -48,11 +48,6 @@ export interface VaultAccount {
   id: string;
 }
 
-export interface GetClaimerProfitablePrizeTxsParams {
-  chainId: number;
-  feeRecipient: string;
-}
-
 export interface Claim {
   vault: string;
   winner: string;
