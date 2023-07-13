@@ -56,12 +56,6 @@ export interface Claim {
   claimed?: boolean;
 }
 
-export interface MulticallResults {
-  [contractAddress: string]: {
-    [reference: string]: any[];
-  };
-}
-
 export interface ClaimedPrize {
   id: string;
   payout: string;

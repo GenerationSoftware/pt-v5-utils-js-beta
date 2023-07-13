@@ -1,23 +1,11 @@
 import { ethers } from 'ethers';
 import { Provider } from '@ethersproject/providers';
-import { ContractCallContext } from 'ethereum-multicall';
 import { MulticallWrapper } from 'ethers-multicall-provider';
 import * as _ from 'lodash';
 
-import {
-  MulticallResults,
-  Claim,
-  ContractsBlob,
-  Vault,
-  PrizePoolInfo,
-  TierPrizeData,
-} from '../types';
-import { findVaultContractBlobInContracts, findPrizePoolInContracts } from '../utils';
-import { getComplexMulticallResults, getEthersMulticallProviderResults } from './multicall';
-
-interface GetWinnersClaimsOptions {
-  filterAutoClaimDisabled?: boolean;
-}
+import { Claim, ContractsBlob, Vault, PrizePoolInfo, TierPrizeData } from '../types';
+import { findPrizePoolInContracts } from '../utils';
+import { getEthersMulticallProviderResults } from './multicall';
 
 /**
  * Returns claims
@@ -31,7 +19,6 @@ export const getWinnersClaims = async (
   prizePoolInfo: PrizePoolInfo,
   contracts: ContractsBlob,
   vaults: Vault[],
-  options: GetWinnersClaimsOptions,
 ): Promise<Claim[]> => {
   const prizePoolContractBlob = findPrizePoolInContracts(contracts);
   const prizePoolAddress: string | undefined = prizePoolContractBlob?.address;
@@ -83,88 +70,18 @@ export const getWinnersClaims = async (
   // Builds the array of claims
   let claims = getClaims(queries);
 
-  // Filters out claims that don't have autoClaim enabled
-  if (options.filterAutoClaimDisabled) {
-    claims = await filterAutoClaimDisabledForClaims(readProvider, contracts, claims);
-  }
-
-  // TODO: Sounds like this won't be a feature on mainnet so going to punt on it for now:
-  //
-  // Filters out claims from vaults where the Claimer contract isn't the Vault.claimer()
-  // (see more on this in the Vault.sol contract guards for `claimPrize()`)
-  // if (options.filterNonClaimerVaults) {
-  //   claims = filterVaultIsNotClaimer(claims);
-  // }
-
   return claims;
 };
 
 const getClaims = (queries: Record<string, any>): Claim[] => {
   // Filter to only 'true' results of isWinner() calls
   const filteredWinners = _.pickBy(queries, (object) => !!object);
-  console.log('filteredWinners');
-  console.log(filteredWinners);
 
   // Push to claims array
   const claims: Claim[] = Object.keys(filteredWinners).map((vaultUserTierResult) => {
     const [vault, winner, tier, prizeIndex] = vaultUserTierResult.split('-');
 
     return { vault, winner, tier: Number(tier), prizeIndex: Number(prizeIndex) };
-  });
-
-  return claims;
-};
-
-const filterAutoClaimDisabledForClaims = async (
-  readProvider: Provider,
-  contracts: ContractsBlob,
-  claims: Claim[],
-): Promise<Claim[]> => {
-  if (claims.length === 0) {
-    return claims;
-  }
-
-  const claimsGroupedByVault = _.groupBy(claims, (claim: Claim) => claim.vault);
-
-  // Compile list of Vault contracts to query and calls within
-  const queries: ContractCallContext[] = [];
-  for (const vault of Object.entries(claimsGroupedByVault)) {
-    const [key, value] = vault;
-    const vaultAddress = key;
-    const vaultClaims = value;
-
-    const vaultContractBlob = findVaultContractBlobInContracts(contracts, vaultAddress);
-
-    const calls: ContractCallContext['calls'] = [];
-    for (const claim of vaultClaims) {
-      const { winner, tier, prizeIndex } = claim;
-
-      calls.push({
-        reference: `${vaultAddress}-${winner}-${tier}-${prizeIndex}`,
-        methodName: 'autoClaimDisabled',
-        methodParameters: [winner],
-      });
-    }
-
-    queries.push({
-      reference: vaultAddress,
-      contractAddress: vaultAddress,
-      abi: vaultContractBlob.abi,
-      calls,
-    });
-  }
-
-  const multicallResults: MulticallResults = await getComplexMulticallResults(
-    readProvider,
-    queries,
-  );
-
-  // Actually filter the original claims with the claims where auto-claim has been disabled
-  claims = claims.filter((claim: Claim) => {
-    const { vault, winner, tier, prizeIndex } = claim;
-    const compositeKey = `${vault}-${winner}-${tier}-${prizeIndex}`;
-
-    return !multicallResults[vault][compositeKey][0];
   });
 
   return claims;

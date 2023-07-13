@@ -16,7 +16,6 @@ export async function computeDrawWinners(
   readProvider: Provider,
   contracts: ContractsBlob,
   chainId: number,
-  filterAutoClaimDisabled?: boolean,
 ): Promise<Claim[]> {
   // #1. Collect prize pool info
   const prizePoolInfo: PrizePoolInfo = await getPrizePoolInfo(readProvider, contracts);
@@ -31,9 +30,7 @@ export async function computeDrawWinners(
   vaults = await populateSubgraphVaultAccounts(chainId, vaults);
 
   // #4. Determine winners for last draw
-  let claims: Claim[] = await getWinnersClaims(readProvider, prizePoolInfo, contracts, vaults, {
-    filterAutoClaimDisabled,
-  });
+  let claims: Claim[] = await getWinnersClaims(readProvider, prizePoolInfo, contracts, vaults);
 
   // #5. Cross-reference prizes claimed subgraph to flag if a claim has been claimed or not
   claims = await flagClaimedRpc(readProvider, contracts, claims);
