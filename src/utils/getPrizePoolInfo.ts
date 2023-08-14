@@ -51,7 +51,6 @@ export const getPrizePoolInfo = async (
       rangeArray: [],
       amount: BigNumber.from(0),
     });
-    console.log(prizePoolContract);
 
     const prizeCount = await prizePoolContract.functions['getTierPrizeCount(uint8)'](tierNum);
     tier.count = prizeCount;

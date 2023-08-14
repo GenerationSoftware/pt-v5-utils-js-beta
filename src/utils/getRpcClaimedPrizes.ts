@@ -38,7 +38,7 @@ export const getRpcClaimedPrizes = async (
   for (let claim of claims) {
     const { vault, winner, tier, prizeIndex } = claim;
     const key = `${vault}-${winner}-${tier}-${prizeIndex}`;
-    queries[key] = prizePoolContract.wasClaimed(winner, tier, prizeIndex);
+    queries[key] = prizePoolContract.wasClaimed(vault, winner, tier, prizeIndex);
   }
 
   const results = await getEthersMulticallProviderResults(multicallProvider, queries);

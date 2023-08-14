@@ -68,7 +68,7 @@ export const getWinnersClaims = async (
   // console.log(Object.values(queries).length);
 
   // Builds the array of claims
-  let claims = getClaims(queries);
+  const claims = getClaims(queries);
 
   return claims;
 };
