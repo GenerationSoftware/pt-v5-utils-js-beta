@@ -32,7 +32,7 @@ export const getPrizePoolInfo = async (
   );
 
   // Draw ID
-  prizePoolInfo.drawId = await prizePoolContract.getLastCompletedDrawId();
+  prizePoolInfo.drawId = await prizePoolContract.getLastClosedDrawId();
 
   // Number of Tiers
   prizePoolInfo.numberOfTiers = await prizePoolContract.numberOfTiers();
@@ -51,8 +51,9 @@ export const getPrizePoolInfo = async (
       rangeArray: [],
       amount: BigNumber.from(0),
     });
+    console.log(prizePoolContract);
 
-    const prizeCount = await prizePoolContract.getTierPrizeCount(tierNum);
+    const prizeCount = await prizePoolContract.functions['getTierPrizeCount(uint8)'](tierNum);
     tier.count = prizeCount;
 
     // Prize Indices Range Array
