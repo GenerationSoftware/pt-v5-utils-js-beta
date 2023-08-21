@@ -33,14 +33,16 @@ export const getWinnersClaims = async (
 
   let queries: Record<string, any> = {};
 
+  console.log('');
+  console.log(`${prizePoolInfo.tiersRangeArray.length} tiers.`);
+
   // OPTIMIZE: Make sure user has balance before adding them to the read multicall
   for (let vault of vaults) {
-    // console.log('');
+    console.log('');
     console.log('# Processing vault:', vault.id);
     let toQuery: Record<string, any> = {};
 
-    // console.log(`${vault.accounts.length} accounts.`);
-    // console.log(`${prizePoolInfo.tiersRangeArray.length} tiers.`);
+    console.log(`${vault.accounts.length} accounts.`);
 
     for (let account of vault.accounts) {
       const address = account.id.split('-')[1];
@@ -50,22 +52,23 @@ export const getWinnersClaims = async (
         // console.log(`${tier.count} prizes for tier ${tierNum}.`);
 
         for (let prizeIndex of tier.rangeArray) {
+          // console.log(`${vault.id}-${address}-${tierNum}-${prizeIndex}`);
           const key = `${vault.id}-${address}-${tierNum}-${prizeIndex}`;
           toQuery[key] = prizePoolContract.isWinner(vault.id, address, tierNum, prizeIndex);
         }
       }
     }
 
-    // console.log('toQuery count:', Object.keys(toQuery).length);
+    console.log('toQuery count:', Object.keys(toQuery).length);
 
     const results = await getEthersMulticallProviderResults(multicallProvider, toQuery);
     queries = { ...queries, ...results };
   }
 
-  // console.log('');
-  // console.log('');
-  // console.log('Total # of Queries:');
-  // console.log(Object.values(queries).length);
+  console.log('');
+  console.log('');
+  console.log('Total # of Queries:');
+  console.log(Object.values(queries).length);
 
   // Builds the array of claims
   const claims = getClaims(queries);
