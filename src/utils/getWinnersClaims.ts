@@ -3,7 +3,7 @@ import { Provider } from '@ethersproject/providers';
 import { MulticallWrapper } from 'ethers-multicall-provider';
 import * as _ from 'lodash';
 
-import { Claim, ContractsBlob, Vault, PrizePoolInfo, TierPrizeData } from '../types';
+import { Claim, ContractsBlob, Vault, PrizePoolInfo, TierPrizeData, VaultAccount } from '../types';
 import { findPrizePoolInContracts } from '../utils';
 import { getEthersMulticallProviderResults } from './multicall';
 
@@ -44,25 +44,32 @@ export const getWinnersClaims = async (
 
     console.log(`${vault.accounts.length} accounts.`);
 
-    for (let account of vault.accounts) {
-      const address = account.id.split('-')[1];
+    // chunking optimization for memory and rpc load calls
+    const vaultAccountArrays = splitArray(vault.accounts, 100);
+    console.log('vaultAccountArrays.length');
+    console.log(vaultAccountArrays.length);
 
-      for (let tierNum of prizePoolInfo.tiersRangeArray) {
-        const tier: TierPrizeData = prizePoolInfo.tierPrizeData[tierNum];
-        // console.log(`${tier.count} prizes for tier ${tierNum}.`);
+    for (let vaultAccountArray of vaultAccountArrays) {
+      for (let account of vaultAccountArray) {
+        const address = account.id.split('-')[1];
 
-        for (let prizeIndex of tier.rangeArray) {
-          // console.log(`${vault.id}-${address}-${tierNum}-${prizeIndex}`);
-          const key = `${vault.id}-${address}-${tierNum}-${prizeIndex}`;
-          toQuery[key] = prizePoolContract.isWinner(vault.id, address, tierNum, prizeIndex);
+        for (let tierNum of prizePoolInfo.tiersRangeArray) {
+          const tier: TierPrizeData = prizePoolInfo.tierPrizeData[tierNum];
+          // console.log(`${tier.count} prizes for tier ${tierNum}.`);
+
+          for (let prizeIndex of tier.rangeArray) {
+            // console.log(`${vault.id}-${address}-${tierNum}-${prizeIndex}`);
+            const key = `${vault.id}-${address}-${tierNum}-${prizeIndex}`;
+            toQuery[key] = prizePoolContract.isWinner(vault.id, address, tierNum, prizeIndex);
+          }
         }
       }
+
+      console.log('toQuery count:', Object.keys(toQuery).length);
+
+      const results = await getEthersMulticallProviderResults(multicallProvider, toQuery);
+      queries = { ...queries, ...results };
     }
-
-    console.log('toQuery count:', Object.keys(toQuery).length);
-
-    const results = await getEthersMulticallProviderResults(multicallProvider, toQuery);
-    queries = { ...queries, ...results };
   }
 
   console.log('');
@@ -88,4 +95,15 @@ const getClaims = (queries: Record<string, any>): Claim[] => {
   });
 
   return claims;
+};
+
+const splitArray = function (array: VaultAccount[], size: number) {
+  let array2 = array.slice(0),
+    arrays = [];
+
+  while (array2.length > 0) {
+    arrays.push(array2.splice(0, size));
+  }
+
+  return arrays;
 };
