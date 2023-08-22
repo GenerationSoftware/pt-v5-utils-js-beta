@@ -7,6 +7,11 @@ import { Claim, ContractsBlob, Vault, PrizePoolInfo, TierPrizeData, VaultAccount
 import { findPrizePoolInContracts } from '../utils';
 import { getEthersMulticallProviderResults } from './multicall';
 
+const CHUNK_MIN_SIZE = 8;
+const CHUNK_MAX_SIZE = 300;
+const CHUNK_CONSTANT_FACTOR = 20000;
+const CHUNK_DAMPING_FACTOR = 1.5;
+
 /**
  * Returns claims
  * @param readProvider a read-capable provider for the chain that should be queried
@@ -45,9 +50,8 @@ export const getWinnersClaims = async (
     console.log(`${vault.accounts.length} accounts.`);
 
     // chunking optimization for memory and rpc load calls
-    const vaultAccountArrays = splitArray(vault.accounts, 100);
-    console.log('vaultAccountArrays.length');
-    console.log(vaultAccountArrays.length);
+    const chunkSize = calculateChunkSize(prizePoolInfo.numPrizeIndices);
+    const vaultAccountArrays = splitArray(vault.accounts, chunkSize);
 
     for (let vaultAccountArray of vaultAccountArrays) {
       for (let account of vaultAccountArray) {
@@ -55,9 +59,9 @@ export const getWinnersClaims = async (
 
         for (let tierNum of prizePoolInfo.tiersRangeArray) {
           const tier: TierPrizeData = prizePoolInfo.tierPrizeData[tierNum];
-          // console.log(`${tier.count} prizes for tier ${tierNum}.`);
+          // console.log(`${tier.prizeIndicesCount} prizes for tier ${tierNum}.`);
 
-          for (let prizeIndex of tier.rangeArray) {
+          for (let prizeIndex of tier.prizeIndicesRangeArray) {
             // console.log(`${vault.id}-${address}-${tierNum}-${prizeIndex}`);
             const key = `${vault.id}-${address}-${tierNum}-${prizeIndex}`;
             toQuery[key] = prizePoolContract.isWinner(vault.id, address, tierNum, prizeIndex);
@@ -106,4 +110,12 @@ const splitArray = function (array: VaultAccount[], size: number) {
   }
 
   return arrays;
+};
+
+// If there are less prize indices we want a larger chunk size, this will reduce the # of RPC network calls
+// and make more efficient use of CPU & RAM
+const calculateChunkSize = (numPrizeIndices: number) => {
+  const chunkSize = Math.pow(CHUNK_CONSTANT_FACTOR / numPrizeIndices, 1 / CHUNK_DAMPING_FACTOR);
+
+  return Math.ceil(Math.min(CHUNK_MAX_SIZE, Math.max(CHUNK_MIN_SIZE, chunkSize)));
 };

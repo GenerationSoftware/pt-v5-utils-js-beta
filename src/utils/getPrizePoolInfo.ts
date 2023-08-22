@@ -16,7 +16,9 @@ export const getPrizePoolInfo = async (
 ): Promise<PrizePoolInfo> => {
   const prizePoolInfo: PrizePoolInfo = {
     drawId: -1,
-    numberOfTiers: -1,
+    numPrizeIndices: -1,
+    numTiers: -1,
+    reserve: '',
     tiersRangeArray: [],
     tierPrizeData: {},
   };
@@ -35,32 +37,37 @@ export const getPrizePoolInfo = async (
   prizePoolInfo.drawId = await prizePoolContract.getLastClosedDrawId();
 
   // Number of Tiers
-  prizePoolInfo.numberOfTiers = await prizePoolContract.numberOfTiers();
+  prizePoolInfo.numTiers = await prizePoolContract.numberOfTiers();
+
+  // Prize Pool Reserve
+  prizePoolInfo.reserve = (await prizePoolContract.reserve()).toString();
 
   // Tiers Range Array
-  const tiersRangeArray = Array.from(
-    { length: prizePoolInfo.numberOfTiers },
-    (value, index) => index,
-  );
+  const tiersRangeArray = Array.from({ length: prizePoolInfo.numTiers }, (value, index) => index);
   prizePoolInfo.tiersRangeArray = tiersRangeArray;
 
   // Tier Data
-  for (let tierNum = 0; tierNum < prizePoolInfo.numberOfTiers; tierNum++) {
+  for (let tierNum = 0; tierNum < prizePoolInfo.numTiers; tierNum++) {
     const tier: TierPrizeData = (prizePoolInfo.tierPrizeData[tierNum.toString()] = {
-      count: -1,
-      rangeArray: [],
+      prizeIndicesCount: -1,
+      prizeIndicesRangeArray: [],
       amount: BigNumber.from(0),
     });
 
     const prizeCount = await prizePoolContract.functions['getTierPrizeCount(uint8)'](tierNum);
-    tier.count = prizeCount;
+    tier.prizeIndicesCount = prizeCount[0];
 
     // Prize Indices Range Array
-    tier.rangeArray = buildPrizeIndicesRangeArray(tier);
+    tier.prizeIndicesRangeArray = buildPrizeIndicesRangeArray(tier);
 
     // Prize Amount
     tier.amount = await prizePoolContract.getTierPrizeSize(tierNum);
   }
+
+  prizePoolInfo.numPrizeIndices = Object.values(prizePoolInfo.tierPrizeData).reduce(
+    (accumulator, tierPrize) => tierPrize.prizeIndicesCount + accumulator,
+    0,
+  );
 
   return prizePoolInfo;
 };
@@ -68,7 +75,7 @@ export const getPrizePoolInfo = async (
 const buildPrizeIndicesRangeArray = (tier: TierPrizeData): number[] => {
   let array: number[] = [];
 
-  const tierPrizeCount = tier.count;
+  const tierPrizeCount = tier.prizeIndicesCount;
   array = Array.from({ length: tierPrizeCount }, (value, index) => index);
 
   return array;

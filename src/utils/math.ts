@@ -1,18 +1,22 @@
+// This is an archive of work started to compute prizes off-chain (instead of using RPC calls to isWinner())
+//
+//
+
 // getPrizePoolInfo.ts
 
 // const grandPrizePeriod = await prizePoolContract.grandPrizePeriodDraws();
 
-// const drawDuration = getDrawDuration(i, numberOfTiers, grandPrizePeriod);
+// const drawDuration = getDrawDuration(i, numTiers, grandPrizePeriod);
 // prizePoolInfo.tierDrawDurations[i.toString()] = drawDuration;
 
 // // const drawDuration = fromSD59x18(sd(1e18).div(tierOdds).ceil());
-// const getDrawDuration = (tier: number, numberOfTiers: number, grandPrizePeriod: number) => {
+// const getDrawDuration = (tier: number, numTiers: number, grandPrizePeriod: number) => {
 //   console.log(``);
 //   console.log(``);
 //   console.log(``);
-//   console.log(`getTierOdds(${tier}, ${numberOfTiers}, ${grandPrizePeriod})`);
+//   console.log(`getTierOdds(${tier}, ${numTiers}, ${grandPrizePeriod})`);
 //   console.log(``);
-//   const tierOdds = getTierOdds(tier, numberOfTiers, grandPrizePeriod);
+//   const tierOdds = getTierOdds(tier, numTiers, grandPrizePeriod);
 //   console.log('');
 //   console.log('tierOdds:');
 //   console.log(tierOdds.toString());
@@ -22,18 +26,18 @@
 // // SD59x18 _k = sd(1).div(
 // //     sd(int256(uint256(grandPrizePeriod)))
 // // ).ln().div(
-// //     sd((-1 * int256(numberOfTiers) + 1))
+// //     sd((-1 * int256(numTiers) + 1))
 // // );
-// // return E.pow(_k.mul(sd(int256(_tier) - (int256(_numberOfTiers) - 1))));
+// // return E.pow(_k.mul(sd(int256(_tier) - (int256(_numTiers) - 1))));
 // export const getTierOdds = (
 //   tier: number,
-//   numberOfTiers: number,
+//   numTiers: number,
 //   grandPrizePeriod: number,
 // ): BigNumber => {
-//   const numberOfTiersBN = ethers.constants.WeiPerEther.mul(numberOfTiers);
+//   const numTiersBN = ethers.constants.WeiPerEther.mul(numTiers);
 
 //   const _k = ethers.constants.WeiPerEther.div(grandPrizePeriod).div(
-//     numberOfTiersBN.mul('-1').add(1),
+//     numTiersBN.mul('-1').add(1),
 //   );
 //   console.log('_k');
 //   console.log(_k.toString());
@@ -42,7 +46,7 @@
 //   console.log(E);
 
 //   const exponent = 3;
-//   // const exponent = _k * tier - numberOfTiers - 1;
+//   // const exponent = _k * tier - numTiers - 1;
 
 //   return E.pow(exponent);
 // };

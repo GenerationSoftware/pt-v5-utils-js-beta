@@ -68,14 +68,16 @@ export interface ClaimedPrizeSimple {
 }
 
 export interface TierPrizeData {
-  count: number;
-  rangeArray: number[]; // an easily iterable range of numbers for each tier's prize indices
+  prizeIndicesCount: number;
+  prizeIndicesRangeArray: number[]; // an easily iterable range of numbers for each tier's prize indices
   amount: BigNumber;
 }
 
 export interface PrizePoolInfo {
   drawId: number;
-  numberOfTiers: number;
+  numTiers: number;
+  numPrizeIndices: number;
+  reserve: string;
   tiersRangeArray: number[]; // an easily iterable range of numbers for each tier available (ie. [0, 1, 2])
   tierPrizeData: {
     [tierNum: string]: TierPrizeData;
