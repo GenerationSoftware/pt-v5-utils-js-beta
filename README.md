@@ -48,9 +48,8 @@ Getting the list of contracts for a specific network is easy using the `download
 
 Currently supports:
 
-- Sepolia (testnet)
-- Mumbai (testnet)
-- Goerli (testnet) (outdated!)
+- Optimism Goerli (testnet)
+- Goerli (testnet)
 
 ```ts
 import { downloadContractsBlob } from "@pooltogether/v5-utils-js";
