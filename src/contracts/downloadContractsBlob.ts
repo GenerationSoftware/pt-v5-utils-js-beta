@@ -7,10 +7,9 @@ interface StringMap {
 }
 
 const CONTRACTS_STORE: StringMap = {
-  '5': 'https://raw.githubusercontent.com/pooltogether/v5-testnet/main/deployments/ethGoerli/contracts.json',
-  '80001': 'https://github.com/pooltogether/v5-testnet/blob/main/deployments/mumbai/contracts.json',
-  '11155111':
-    'https://raw.githubusercontent.com/GenerationSoftware/pt-v5-testnet/main/deployments/ethSepolia/contracts.json',
+  '5': 'https://raw.githubusercontent.com/GenerationSoftware/pt-v5-testnet/main/deployments/ethGoerli/contracts.json',
+  '420':
+    'https://raw.githubusercontent.com/GenerationSoftware/pt-v5-testnet/main/deployments/optimismGoerli/contracts.json',
 };
 
 /**
