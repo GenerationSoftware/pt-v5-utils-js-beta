@@ -4,9 +4,9 @@ const CHAIN_ID = {
 };
 
 export const TWAB_CONTROLLER_SUBGRAPH_URIS = {
-  [CHAIN_ID.optimismGoerli]: `https://api.studio.thegraph.com/query/41211/pt-v5-op-goerli-twab-control`,
+  [CHAIN_ID.optimismGoerli]: `https://api.studio.thegraph.com/query/41211/pt-v5-op-goerli-twab-control/v0.0.1`,
 };
 
 export const PRIZE_POOL_SUBGRAPH_URIS = {
-  [CHAIN_ID.optimismGoerli]: `https://api.thegraph.com/query/41211/pt-v5-op-goerli-prize-pool`,
+  [CHAIN_ID.optimismGoerli]: `https://api.studio.thegraph.com/query/41211/pt-v5-op-goerli-prize-pool/v0.0.1`,
 };
