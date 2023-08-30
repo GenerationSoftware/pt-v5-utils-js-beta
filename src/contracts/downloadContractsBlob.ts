@@ -1,5 +1,5 @@
 import { ContractsBlob } from '../types';
-import { CONTRACTS_STORE } from '../constants';
+import { CONTRACTS_STORE } from '../utils/constants';
 
 const nodeFetch = require('node-fetch');
 
