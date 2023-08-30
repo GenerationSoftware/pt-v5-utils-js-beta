@@ -1,16 +1,7 @@
 import { ContractsBlob } from '../types';
+import { CONTRACTS_STORE } from '../constants';
 
 const nodeFetch = require('node-fetch');
-
-interface StringMap {
-  [key: string]: string;
-}
-
-const CONTRACTS_STORE: StringMap = {
-  '5': 'https://raw.githubusercontent.com/GenerationSoftware/pt-v5-testnet/main/deployments/ethGoerli/contracts.json',
-  '420':
-    'https://raw.githubusercontent.com/GenerationSoftware/pt-v5-testnet/main/deployments/optimismGoerli/contracts.json',
-};
 
 /**
  * Downloads the latest contracts blob from the raw data source on GitHub
