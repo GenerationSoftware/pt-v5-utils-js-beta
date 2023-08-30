@@ -1,14 +1,12 @@
 <p align="center">
-  <a href="https://github.com/pooltogether/pooltogether--brand-assets">
-    <img src="https://github.com/pooltogether/pooltogether--brand-assets/blob/977e03604c49c63314450b5d432fe57d34747c66/logo/pooltogether-logo--purple-gradient.png?raw=true" alt="PoolTogether Brand" style="max-width:100%;" width="200">
-  </a>
+  <img src="https://raw.githubusercontent.com/GenerationSoftware/pt-v5-utils-js/main/img/pooltogether-logo--purple.png?raw=true" alt="PoolTogether Brand" style="max-width:100%;" width="300">
 </p>
 
 <br />
 
 # 🧰 Javascript Utility Library - PoolTogether V5
 
-[Documentation](https://docs.pooltogether.com/)
+[📖 Documentation](https://v4.docs.pooltogether.com/protocol/next/introduction)
 
 ## Compute
 
