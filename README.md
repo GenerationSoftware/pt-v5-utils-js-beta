@@ -10,11 +10,11 @@
 
 [Documentation](https://docs.pooltogether.com/)
 
-## Calculations, Computations and Core Logic
+## Compute
 
 The `@pooltogether/v5-utils-js` [node module package](https://www.npmjs.com/package/@pooltogether/v5-utils-js) provides computations for the PoolTogether v5 protocol.
 
-High-order operations like processing subgraphs and chain state (draws, winners, etc..) is included in the `computations` namespaced functions.
+High-order operations like processing subgraphs and chain state (draws, winners, etc..) is included in the `compute` namespaced functions.
 
 **🖥️ Computations:**
 
@@ -62,18 +62,30 @@ main();
 
 # 🏆 Quickstart (Draw Results)
 
-`computeDrawWinners(provider, contracts, chainId)` computes and returns a JSON blob of winner's Claim objects for each tier of a prize pool, grouped by vault for the previous draw.
+`computeDrawWinners(provider, contracts, chainId)` computes and returns a JSON blob of all previous draw winner's Claim objects for each tier of a prize pool, grouped by vault.
 
 ```ts
 import { computeDrawWinners } from "@pooltogether/v5-utils-js";
 
 // Compute Winners for the last Draw
 const winners = computeDrawWinners(provider, contracts, chainId);
+
+// Returns Claim[]:
+//
+// interface Claim {
+//   vault: string;
+//   winner: string;
+//   tier: number;
+//   prizeIndex: number;
+//   claimed?: boolean;
+// }
+//
 ```
 
+<!--
 # 📖 Documentation
 
 ### Namespaces
 
 - [compute](docs/md/modules/compute.md)
-- [utils](docs/md/modules/utils.md)
+- [utils](docs/md/modules/utils.md) -->
