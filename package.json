@@ -3,7 +3,7 @@
     "description": "(BETA) Utility library for PoolTogether v5 computations.",
     "author": "PoolTogether Inc",
     "license": "GPL-3.0-only",
-    "version": "0.0.1-beta.41",
+    "version": "0.0.1-beta.42",
     "homepage": "https://github.com/generationsoftware/pt-v5-utils-js",
     "bugs": {
         "url": "https://github.com/generationsoftware/pt-v5-utils-js-beta/issues",

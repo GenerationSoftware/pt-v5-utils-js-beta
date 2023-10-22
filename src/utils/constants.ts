@@ -9,9 +9,9 @@ interface StringMap {
 }
 
 export const CONTRACTS_STORE: StringMap = {
-  '1': 'https://raw.githubusercontent.com/GenerationSoftware/pt-v5-mainnet/main/deployments/ethereum/contracts.json',
+  '1': 'https://raw.githubusercontent.com/GenerationSoftware/pt-v5-beta/main/deployments/ethereum/contracts.json',
   '5': 'https://raw.githubusercontent.com/GenerationSoftware/pt-v5-testnet/main/deployments/ethGoerli/contracts.json',
-  '10': 'https://raw.githubusercontent.com/GenerationSoftware/pt-v5-mainnet/main/deployments/optimism/contracts.json',
+  '10': 'https://raw.githubusercontent.com/GenerationSoftware/pt-v5-beta/main/deployments/optimism/contracts.json',
   '420':
     'https://raw.githubusercontent.com/GenerationSoftware/pt-v5-testnet/main/deployments/optimismGoerli/contracts.json',
 };
